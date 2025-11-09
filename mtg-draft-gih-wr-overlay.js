@@ -136,7 +136,7 @@
         SEVENTEENLANDS: {
             name: '17Lands',
             detect: () => window.location.hostname.includes('17lands.com'),
-            cardSelector: 'img.sc-iFjrBz[alt]',
+            cardSelector: 'img[alt][src*="cards.scryfall.io"]',
             imageContainerSelector: null, // Append directly to parent
             expansionDetector: detectExpansion17Lands,
             getCardName: getCardName17Lands,
