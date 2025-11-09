@@ -7,7 +7,9 @@
 // @match        https://draftmancer.com/*
 // @match        https://www.17lands.com/*
 // @license      MIT
-// @grant        none
+// @grant        GM_xmlhttpRequest
+// @connect      api.scryfall.com
+// @connect      www.17lands.com
 // ==/UserScript==
 
 (function() {
@@ -22,6 +24,29 @@
     let currentSite = null;
     let setReleaseDatesCache = {}; // Cache for set release dates
 
+    // Helper function to wrap GM_xmlhttpRequest as a Promise
+    function gmFetch(url, options = {}) {
+        return new Promise((resolve, reject) => {
+            GM_xmlhttpRequest({
+                method: options.method || 'GET',
+                url: url,
+                headers: options.headers || {},
+                data: options.body,
+                onload: (response) => {
+                    resolve({
+                        ok: response.status >= 200 && response.status < 300,
+                        status: response.status,
+                        json: async () => JSON.parse(response.responseText),
+                        text: async () => response.responseText
+                    });
+                },
+                onerror: (error) => {
+                    reject(new Error(`GM_xmlhttpRequest failed: ${error}`));
+                }
+            });
+        });
+    }
+
     // Fetch set release date from Scryfall
     async function fetchSetReleaseDate(expansion) {
         // Check cache first
@@ -34,7 +59,7 @@
             const url = `https://api.scryfall.com/sets/${expansion.toLowerCase()}`;
             console.log(`Fetching set data from Scryfall: ${url}`);
 
-            const response = await fetch(url);
+            const response = await gmFetch(url);
 
             if (!response.ok) {
                 throw new Error(`Scryfall API error: ${response.status}`);
@@ -158,7 +183,7 @@
             for (const batch of batches) {
                 const identifiers = batch.map(id => ({ id }));
 
-                const response = await fetch('https://api.scryfall.com/cards/collection', {
+                const response = await gmFetch('https://api.scryfall.com/cards/collection', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -283,7 +308,7 @@
 
             console.log(`API URL: ${url}`);
 
-            const response = await fetch(url, {
+            const response = await gmFetch(url, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
