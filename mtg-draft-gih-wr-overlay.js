@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MTG Draft GIH WR Overlay
 // @namespace    http://tampermonkey.net/
-// @version      2.1
+// @version      2.2
 // @description  Toggle overlay showing Game In Hand win rates for MTG cards on Draftmancer and 17Lands
 // @author       You
 // @match        https://draftmancer.com/*
@@ -127,7 +127,7 @@
         DRAFTMANCER: {
             name: 'Draftmancer',
             detect: () => window.location.hostname.includes('draftmancer.com'),
-            cardSelector: '.card[data-arena-id]',
+            cardSelector: '.card.booster-card',
             imageContainerSelector: '.card-image',
             expansionDetector: detectExpansionDraftmancer,
             getCardName: getCardNameDraftmancer,
@@ -163,9 +163,16 @@
 
         try {
             const cardElements = document.querySelectorAll(currentSite.cardSelector);
-            const scryfallIds = Array.from(cardElements).map(card =>
-                card.getAttribute('data-arena-id')
-            ).filter(id => id && !scryfallToName[id]);
+            const scryfallIds = Array.from(cardElements).map(card => {
+                // Extract Scryfall ID from image URL
+                const img = card.querySelector('img[src*="cards.scryfall.io"]');
+                if (img && img.src) {
+                    // URL format: https://cards.scryfall.io/.../front/e/1/e1068723-d1ef-4007-97d9-b10dccdbade4.jpg
+                    const match = img.src.match(/\/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})\./);
+                    return match ? match[1] : null;
+                }
+                return null;
+            }).filter(id => id && !scryfallToName[id]);
 
             if (scryfallIds.length === 0) {
                 console.log('All visible cards already mapped');
@@ -273,8 +280,14 @@
 
     // Draftmancer: Get card name from Scryfall mapping
     function getCardNameDraftmancer(cardElement) {
-        const scryfallId = cardElement.getAttribute('data-arena-id');
-        return scryfallToName[scryfallId];
+        // Extract Scryfall ID from image URL
+        const img = cardElement.querySelector('img[src*="cards.scryfall.io"]');
+        if (img && img.src) {
+            const match = img.src.match(/\/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})\./);
+            const scryfallId = match ? match[1] : null;
+            return scryfallId ? scryfallToName[scryfallId] : null;
+        }
+        return null;
     }
 
     // 17Lands: Get card name from alt text
