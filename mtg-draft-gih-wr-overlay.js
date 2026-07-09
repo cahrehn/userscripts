@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MTG Draft GIH WR Overlay
 // @namespace    http://tampermonkey.net/
-// @version      2.2
+// @version      2.3
 // @description  Toggle overlay showing Game In Hand win rates for MTG cards on Draftmancer and 17Lands
 // @author       You
 // @match        https://draftmancer.com/*
@@ -335,11 +335,19 @@
             const data = await response.json();
 
             data.forEach(card => {
-                if (card.name && card.ever_drawn_win_rate !== null) {
+                // 17Lands sometimes nulls out ever_drawn_win_rate (esp. on freshly
+                // released sets) while overall win_rate is still populated.
+                // Fall back to win_rate in that case so cards aren't silently dropped.
+                const wr = card.ever_drawn_win_rate !== null && card.ever_drawn_win_rate !== undefined
+                    ? card.ever_drawn_win_rate
+                    : card.win_rate;
+
+                if (card.name && wr !== null && wr !== undefined) {
                     const id = card.mtga_id || card.arena_id || card.name;
 
                     cardData[id] = {
-                        gihWR: card.ever_drawn_win_rate,
+                        gihWR: wr,
+                        isFallbackWR: card.ever_drawn_win_rate === null || card.ever_drawn_win_rate === undefined,
                         name: card.name,
                         color: card.color || '',
                         rarity: card.rarity || '',
@@ -464,7 +472,8 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         `;
-        overlay.textContent = `${sampleWarning}GIH: ${(data.gihWR * 100).toFixed(1)}%`;
+        const label = data.isFallbackWR ? 'WR' : 'GIH';
+        overlay.textContent = `${sampleWarning}${label}: ${(data.gihWR * 100).toFixed(1)}%`;
 
         return overlay;
     }
