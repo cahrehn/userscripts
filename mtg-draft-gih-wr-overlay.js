@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MTG Draft GIH WR Overlay
 // @namespace    http://tampermonkey.net/
-// @version      2.3
+// @version      3.2
 // @description  Toggle overlay showing Game In Hand win rates for MTG cards on Draftmancer and 17Lands
 // @author       You
 // @match        https://draftmancer.com/*
@@ -22,7 +22,6 @@
     let manualExpansion = null;
     let dataLoaded = false;
     let currentSite = null;
-    let setReleaseDatesCache = {}; // Cache for set release dates
 
     // Helper function to wrap GM_xmlhttpRequest as a Promise
     function gmFetch(url, options = {}) {
@@ -45,81 +44,6 @@
                 }
             });
         });
-    }
-
-    // Fetch set release date from Scryfall
-    async function fetchSetReleaseDate(expansion) {
-        // Check cache first
-        if (setReleaseDatesCache[expansion]) {
-            console.log(`Using cached release date for ${expansion}: ${setReleaseDatesCache[expansion]}`);
-            return setReleaseDatesCache[expansion];
-        }
-
-        try {
-            const url = `https://api.scryfall.com/sets/${expansion.toLowerCase()}`;
-            console.log(`Fetching set data from Scryfall: ${url}`);
-
-            const response = await gmFetch(url);
-
-            if (!response.ok) {
-                throw new Error(`Scryfall API error: ${response.status}`);
-            }
-
-            const setData = await response.json();
-            const releaseDate = setData.released_at;
-
-            if (releaseDate) {
-                // Cache the release date
-                setReleaseDatesCache[expansion] = releaseDate;
-
-                // Save cache to localStorage
-                try {
-                    localStorage.setItem('setReleaseDatesCache', JSON.stringify(setReleaseDatesCache));
-                } catch (e) {
-                    console.warn('Failed to cache release dates:', e);
-                }
-
-                console.log(`Fetched release date for ${expansion}: ${releaseDate}`);
-                return releaseDate;
-            }
-
-            return null;
-
-        } catch (error) {
-            console.error(`Error fetching set release date for ${expansion}:`, error);
-            return null;
-        }
-    }
-
-    // Load release dates cache from localStorage
-    function loadReleaseDatesCache() {
-        try {
-            const cached = localStorage.getItem('setReleaseDatesCache');
-            if (cached) {
-                setReleaseDatesCache = JSON.parse(cached);
-                console.log(`Loaded ${Object.keys(setReleaseDatesCache).length} cached release dates`);
-            }
-        } catch (e) {
-            console.warn('Failed to load release dates cache:', e);
-        }
-    }
-
-    // Get date range for API call
-    async function getDateRange(expansion) {
-        const releaseDate = await fetchSetReleaseDate(expansion);
-
-        if (!releaseDate) {
-            console.warn(`No release date found for ${expansion}, using default date range`);
-            return null;
-        }
-
-        const today = new Date();
-        const startDate = releaseDate; // Use release date as start
-        const endDate = today.toISOString().split('T')[0]; // Today's date in YYYY-MM-DD format
-
-        console.log(`Date range for ${expansion}: ${startDate} to ${endDate}`);
-
-        return { startDate, endDate };
     }
 
     // Site detection and configuration
@@ -310,14 +234,12 @@
 
         try {
             console.log(`Fetching card data for ${expansion}...`);
+            cardData = {};
 
-            // Build URL with date parameters
-            let url = `https://www.17lands.com/card_ratings/data?expansion=${expansion}&format=PremierDraft`;
-
-            const dateRange = await getDateRange(expansion);
-            if (dateRange) {
-                url += `&start_date=${dateRange.startDate}&end_date=${dateRange.endDate}`;
-            }
+            // Use the current 17Lands API (the old card_ratings/data endpoint with
+            // start_date/end_date is legacy and returns a much smaller, stale-looking
+            // dataset). time_period=ALL_TIME pulls the full sample 17Lands has.
+            const url = `https://www.17lands.com/api/card_data?expansion=${expansion}&event_type=PremierDraft&time_period=ALL_TIME`;
 
             console.log(`API URL: ${url}`);
 
@@ -332,7 +254,8 @@
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data = await response.json();
+            const responseBody = await response.json();
+            const data = responseBody.data || [];
 
             data.forEach(card => {
                 // 17Lands sometimes nulls out ever_drawn_win_rate (esp. on freshly
@@ -441,6 +364,7 @@
         }
 
         if (!data) {
+            console.log(`No 17Lands rate data at all for "${lookupName}" (not in card_data response, or has null win_rate and ever_drawn_win_rate)`);
             return null;
         }
 
@@ -659,9 +583,6 @@
 
         document.addEventListener('keydown', handleKeyPress);
         observeCards();
-
-        // Load cached release dates
-        loadReleaseDatesCache();
 
         // Wait for page to load
         await new Promise(resolve => setTimeout(resolve, 1000));
