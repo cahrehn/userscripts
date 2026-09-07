@@ -1,21 +1,20 @@
 // ==UserScript==
 // @name         MTG Draft GIH WR Overlay
 // @namespace    http://tampermonkey.net/
-// @version      3.4
+// @version      3.3
 // @description  Toggle overlay showing Game In Hand win rates for MTG cards on Draftmancer and 17Lands
 // @author       You
 // @match        https://draftmancer.com/*
 // @match        https://www.17lands.com/*
 // @license      MIT
 // @grant        GM_xmlhttpRequest
+// @grant        GM.xmlHttpRequest
 // @connect      api.scryfall.com
 // @connect      www.17lands.com
 // ==/UserScript==
 
 (function() {
     'use strict';
-
-    const VERSION = '3.4';
 
     let overlayEnabled = false;
     let cardData = {};
@@ -541,11 +540,6 @@
         let debounceTimer = null;
 
         const observer = new MutationObserver((mutations) => {
-            // Some SPA re-renders can detach our nodes - put them back
-            if (controls && !controls.root.isConnected && document.body) {
-                document.body.appendChild(controls.root);
-            }
-
             if (!overlayEnabled) return;
 
             // Check if any mutations actually added/removed card elements
@@ -618,40 +612,6 @@
         }
     }
 
-    // On iOS there is no console without tethering to a Mac, so the script
-    // announces itself on load. Tap to dismiss; auto-hides after a few seconds.
-    function showToast(message, ms = 4500) {
-        if (!document.body) return;
-
-        const previous = document.querySelector('.gih-wr-toast');
-        if (previous) previous.remove();
-
-        const toast = document.createElement('div');
-        toast.className = 'gih-wr-toast';
-        toast.textContent = message;
-        toast.style.cssText = `
-            position: fixed;
-            top: 12px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2147483002;
-            max-width: 90vw;
-            padding: 8px 14px;
-            border-radius: 8px;
-            background: rgba(0, 0, 0, 0.85);
-            color: #e0e7ff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 13px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-        `;
-        toast.style.top = 'calc(12px + env(safe-area-inset-top, 0px))';
-        toast.addEventListener('click', () => toast.remove());
-
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), ms);
-    }
-
     const BUTTON_BASE = `
         appearance: none;
         -webkit-appearance: none;
@@ -686,8 +646,8 @@
         root.className = 'gih-wr-controls';
         root.style.cssText = `
             position: fixed;
-            right: 12px;
-            bottom: 12px;
+            right: calc(12px + env(safe-area-inset-right, 0px));
+            bottom: calc(12px + env(safe-area-inset-bottom, 0px));
             z-index: 2147483000;
             display: flex;
             flex-direction: column;
@@ -698,11 +658,6 @@
             -webkit-user-select: none;
             user-select: none;
         `;
-
-        // Applied separately so an environment without env() support keeps the
-        // plain 12px fallback above instead of dropping the offsets entirely
-        root.style.right = 'calc(12px + env(safe-area-inset-right, 0px))';
-        root.style.bottom = 'calc(12px + env(safe-area-inset-bottom, 0px))';
 
         const menu = document.createElement('div');
         menu.style.cssText = `
@@ -972,9 +927,15 @@
 
     // Initialize
     async function init() {
-        if (!currentSite) return;
+        // Detect which site we're on
+        detectSite();
 
-        console.log(`GIH WR Overlay ${VERSION} loaded for ${currentSite.name}.`);
+        if (!currentSite) {
+            console.error('Could not detect site - extension will not work');
+            return;
+        }
+
+        console.log(`GIH WR Overlay script loaded for ${currentSite.name}.`);
         console.log('Hotkeys (desktop / hardware keyboard):');
         console.log('  Ctrl+Shift+A - Toggle overlay');
         console.log('  Ctrl+Shift+R - Reload data');
@@ -991,6 +952,7 @@
         }
 
         document.addEventListener('keydown', handleKeyPress);
+        createControls();
         observeCards();
 
         // Wait for page to load
@@ -1023,78 +985,10 @@
         updateControls();
     }
 
-    // <body> may not exist yet if the userscript manager injects at
-    // document-start, and DOMContentLoaded may already have fired if it injects
-    // late - handle both.
-    function whenBodyReady(callback) {
-        let done = false;
-        let observer = null;
-        let timer = null;
-
-        function run() {
-            if (done || !document.body) return;
-            done = true;
-            if (observer) observer.disconnect();
-            if (timer) clearInterval(timer);
-            document.removeEventListener('DOMContentLoaded', run);
-            document.removeEventListener('readystatechange', run);
-            callback();
-        }
-
-        if (document.body) {
-            run();
-            return;
-        }
-
-        document.addEventListener('DOMContentLoaded', run);
-        document.addEventListener('readystatechange', run);
-
-        // At the very start of a document even <html> can be missing, which is
-        // why this cannot rely on observing documentElement alone.
-        if (document.documentElement) {
-            observer = new MutationObserver(run);
-            observer.observe(document.documentElement, { childList: true, subtree: true });
-        } else {
-            timer = setInterval(run, 20);
-        }
+    // Wait for page to be ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
     }
-
-    function boot() {
-        detectSite();
-
-        try {
-            createControls();
-        } catch (e) {
-            console.error('GIH WR Overlay: failed to create controls', e);
-            showToast(`GIH WR ${VERSION}: controls failed - ${e.message}`, 10000);
-        }
-
-        showToast(
-            `GIH WR ${VERSION} · ${currentSite ? currentSite.name : 'site not recognized'}` +
-            ` · ${gmRequest ? 'GM API ok' : 'no GM API (using fetch)'}`
-        );
-
-        if (!currentSite) {
-            console.error('Could not detect site - extension will not work');
-            return;
-        }
-
-        init().catch(e => {
-            console.error('GIH WR Overlay: init failed', e);
-            showToast(`GIH WR ${VERSION}: init failed - ${e.message}`, 10000);
-        });
-    }
-
-    // Exposed for debugging from a console / Web Inspector
-    window.__gihWROverlay = {
-        version: VERSION,
-        toggle: () => toggleOverlays(),
-        reload: () => reloadData(),
-        setExpansion: (code) => applyExpansion(code),
-        state: () => ({ version: VERSION, site: currentSite && currentSite.name, overlayEnabled,
-                        currentExpansion, manualExpansion, cards: Object.keys(cardData).length,
-                        controlsAttached: !!(controls && controls.root.isConnected) })
-    };
-
-    whenBodyReady(boot);
 })();
