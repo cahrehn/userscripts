@@ -3,10 +3,17 @@ name: E2E (Scryfall API)
 # Scryfall's API is public and documented, and these tests make only a couple of
 # small requests, so a daily contract check is proportionate.
 on:
+  # GitHub cron has no jitter: every repo sharing a schedule fires on the same
+  # minute. Rather than sleep - which burns a runner slot doing nothing - the
+  # job is scheduled at several scattered times and a guard step picks exactly
+  # one of them per day, derived from the date. Same effect, no idle time.
   schedule:
-    # 06:17 UTC - an odd minute rather than the top of the hour, which is when
-    # GitHub's scheduler is most congested. See the jitter step below.
-    - cron: '17 6 * * *'
+    - cron: '13 2 * * *'
+    - cron: '47 6 * * *'
+    - cron: '29 10 * * *'
+    - cron: '51 14 * * *'
+    - cron: '07 18 * * *'
+    - cron: '37 22 * * *'
   workflow_dispatch:
 
 concurrency:
@@ -16,23 +23,26 @@ concurrency:
 jobs:
   scryfall:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
-      # GitHub cron has no randomness, so every repo on a given schedule fires
-      # at once. Sleep a random slice of an hour so this lands at a different
-      # time each day instead of hammering the same minute.
-      - name: Jitter
-        if: github.event_name == 'schedule'
-        run: sleep $((RANDOM % 3600))
-
       - uses: actions/checkout@v7
 
+      # Exactly one of the six daily slots runs, chosen by hashing the date, so
+      # the time varies day to day but the job still runs once a day.
+      - name: Pick one slot for today
+        id: guard
+        run: node .github/scripts/schedule-guard.mjs daily 6
+
       - uses: actions/setup-node@v7
+        if: steps.guard.outputs.run == 'true'
         with:
           node-version: 22
           cache: npm
 
       - run: npm ci
+        if: steps.guard.outputs.run == 'true'
 
       # No browser needed - these are plain HTTP contract checks.
       - run: npx playwright test --config playwright.config.mjs --project live-scryfall
+        if: steps.guard.outputs.run == 'true'

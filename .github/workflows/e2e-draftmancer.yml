@@ -17,6 +17,9 @@ concurrency:
 jobs:
   draftmancer:
     runs-on: ubuntu-latest
+    # A full run is ~2 minutes. This is a backstop against a hung browser
+    # holding a runner for the default 6 hours.
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v7
