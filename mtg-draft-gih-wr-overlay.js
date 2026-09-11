@@ -510,7 +510,11 @@
         scryfallToName = {};
         dataLoaded = false;
 
-        const expansion = manualExpansion || currentSite.expansionDetector();
+        // currentSite is null until detectSite() has run, and on any page that is
+        // neither Draftmancer nor 17Lands. Guard rather than throw so a caller
+        // that fires early - or a reset triggered before boot finishes - degrades
+        // quietly instead of breaking the handler it was called from.
+        const expansion = manualExpansion || (currentSite && currentSite.expansionDetector());
         if (!expansion) {
             console.warn('No expansion detected - set one manually first');
             updateControls();
@@ -522,7 +526,7 @@
             updateControls();
         });
 
-        return currentSite.needsScryfall
+        return (currentSite && currentSite.needsScryfall)
             ? loadScryfallMapping().then(fetchData)
             : fetchData();
     }
