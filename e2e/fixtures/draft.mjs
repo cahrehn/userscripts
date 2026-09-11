@@ -74,22 +74,34 @@ export async function startBotDraft(page, { bots = 7, settle = 2500 } = {}) {
     await page.waitForTimeout(settle);
 }
 
-/** Read the "Pack #N, Pick #M" position the script keys off. */
+/**
+ * Read the position the script keys off: the pack index and the booster size.
+ * The "Pick #" number is ignored - it is an internal value, not a pick index.
+ */
 export async function readPosition(page) {
     const text = await page.locator(PICK_COUNTER).textContent();
-    const match = text.match(/Pack\s*#(\d+),\s*Pick\s*#(\d+)/i);
-    return match ? { pack: Number(match[1]), pick: Number(match[2]) } : null;
+    const pack = text.match(/Pack\s*#(\d+)/i);
+    const booster = text.match(/Your\s+Booster\s*\((\d+)\)/i);
+    return pack && booster
+        ? { pack: Number(pack[1]), boosterSize: Number(booster[1]) }
+        : null;
 }
 
-/** Click the first card in the booster and wait for the next pack to arrive. */
-export async function makePick(page, { settle = 2500 } = {}) {
+/**
+ * Pick the first card in the booster and wait for the next pack.
+ *
+ * Double-click, not click: Draftmancer binds @click to selectCard (which only
+ * highlights the card) and @dblclick to doubleClickCard, which actually submits
+ * the pick. A single click leaves the draft sitting on the same pack.
+ */
+export async function makePick(page, { settle = 3000 } = {}) {
     const before = await readPosition(page);
-    await page.locator(BOOSTER_CARD).first().click();
+    await page.locator(BOOSTER_CARD).first().dblclick();
 
     await expect
         .poll(async () => {
             const now = await readPosition(page);
-            return now && (now.pack !== before.pack || now.pick !== before.pick);
+            return now && (now.pack !== before.pack || now.boosterSize !== before.boosterSize);
         }, { timeout: 30000, intervals: [500, 1000, 2000] })
         .toBe(true);
 
