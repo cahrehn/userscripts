@@ -1319,6 +1319,37 @@
         updateControls();
     }
 
+    // ---------------------------------------------------------------------
+    // Test hook
+    //
+    // Under Node (the unit tests) there is no document, so the script must not
+    // boot itself - it exports its pure and DOM-reading helpers instead. In a
+    // browser `module` is undefined, this whole block is skipped, and the script
+    // starts exactly as before. Keeping it inside the IIFE means the internals
+    // stay private to everyone except the test runner.
+    // ---------------------------------------------------------------------
+    const isNodeTestEnv = typeof module !== 'undefined' && module.exports;
+
+    if (isNodeTestEnv) {
+        module.exports = {
+            normalizeColors,
+            getWinrateColor,
+            readDraftPosition,
+            checkForNewDraft,
+            // Lets a test drive the latch without a real draft: the state lives
+            // in closure variables that are otherwise unreachable.
+            __setColorFilter: (value) => { colorFilter = value; },
+            __getColorFilter: () => colorFilter,
+            __resetDraftState: (position) => {
+                lastDraftPosition = position || null;
+                handledCurrentStart = !!lastDraftPosition &&
+                    lastDraftPosition.pack === 1 && lastDraftPosition.pick === 1;
+            },
+            __getDraftState: () => ({ lastDraftPosition, handledCurrentStart })
+        };
+        return;
+    }
+
     // Wait for page to be ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);

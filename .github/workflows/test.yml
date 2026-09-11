@@ -1,0 +1,29 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      # npm ci installs exactly what package-lock.json pins and fails if the
+      # lockfile is out of sync with package.json.
+      - run: npm ci
+
+      - run: npm test
+
+      # Catches a syntax error in the userscript even if no test imports the
+      # affected code path.
+      - name: Check userscript parses
+        run: node --check mtg-draft-gih-wr-overlay.js
