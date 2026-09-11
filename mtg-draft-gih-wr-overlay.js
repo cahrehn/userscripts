@@ -560,6 +560,10 @@
         return reloadData();
     }
 
+    function clearColors() {
+        return applyColors('');
+    }
+
     function showOverlays() {
         if (!currentSite) return;
 
@@ -603,6 +607,13 @@
         let debounceTimer = null;
 
         const observer = new MutationObserver((mutations) => {
+            // Runs before the overlay check: the pick counter keeps advancing
+            // while overlays are off (they auto-hide after every pick), and a
+            // new draft has to be noticed in that state too.
+            if (currentSite === SITES.DRAFTMANCER) {
+                checkForNewDraft();
+            }
+
             if (!overlayEnabled) return;
 
             // Check if any mutations actually added/removed card elements
@@ -640,10 +651,73 @@
             }
         });
 
+        // characterData is included so the pick counter is still seen if
+        // Draftmancer ever updates that text in place rather than rebuilding the
+        // subtree. The callback ignores non-card mutations cheaply, so the extra
+        // notifications cost nothing.
         observer.observe(document.body, {
             childList: true,
-            subtree: true
+            subtree: true,
+            characterData: true
         });
+    }
+
+    // ---------------------------------------------------------------------
+    // New-draft detection
+    //
+    // A colour filter is only meaningful for the draft it was chosen in, so it
+    // has to reset when a new one starts. Draftmancer renders the active
+    // drafter's position as "Pack #N, Pick #M" inside #booster-controls, which
+    // is the one unambiguous signal available from the DOM: seeing pack 1 /
+    // pick 1 after having been deeper into a draft means a new draft began.
+    // (Watching for the pool emptying is unreliable - the pool is also empty
+    // during the pre-draft lobby, which would clear a filter set while waiting
+    // to fire.)
+    //
+    // 17Lands has no draft to track - it is a stats site, so the filter simply
+    // persists there until changed or cleared.
+    // ---------------------------------------------------------------------
+
+    let lastDraftPosition = null;
+    // Set once we have handled the P1P1 we are currently sitting on, so repeated
+    // re-renders of the same first pick do not re-fire the reset. Cleared as soon
+    // as the draft moves off P1P1, which arms the next draft's reset.
+    let handledCurrentStart = false;
+
+    function readDraftPosition() {
+        const controlsEl = document.querySelector('#booster-controls');
+        if (!controlsEl) return null;
+
+        const match = controlsEl.textContent.match(/Pack\s*#(\d+),\s*Pick\s*#(\d+)/i);
+        if (!match) return null;
+
+        return { pack: parseInt(match[1], 10), pick: parseInt(match[2], 10) };
+    }
+
+    function checkForNewDraft() {
+        const position = readDraftPosition();
+        if (!position) return;
+
+        lastDraftPosition = position;
+
+        const atStart = position.pack === 1 && position.pick === 1;
+
+        // Off P1P1: arm the reset so the next time we land on a first pick it
+        // counts as a new draft.
+        if (!atStart) {
+            handledCurrentStart = false;
+            return;
+        }
+
+        // On P1P1. Fire once per arrival, not once per re-render - Draftmancer
+        // rebuilds this subtree on every render, so this runs many times per pick.
+        if (handledCurrentStart) return;
+        handledCurrentStart = true;
+
+        if (colorFilter) {
+            console.log('New draft detected (Pack #1, Pick #1) - clearing colour filter');
+            clearColors();
+        }
     }
 
     // ---------------------------------------------------------------------
@@ -1202,6 +1276,14 @@
         document.addEventListener('keydown', handleKeyPress);
         createControls();
         observeCards();
+
+        // Seed the baseline so an in-progress draft does not read as a brand new
+        // one on the first mutation after a page reload. Loading directly into a
+        // P1P1 means the restored filter belongs to *that* draft (you set it, then
+        // reloaded), so treat its start as already handled.
+        lastDraftPosition = readDraftPosition();
+        handledCurrentStart = !!lastDraftPosition &&
+            lastDraftPosition.pack === 1 && lastDraftPosition.pick === 1;
 
         // Wait for page to load
         await new Promise(resolve => setTimeout(resolve, 1000));
