@@ -1,0 +1,42 @@
+name: E2E (Draftmancer)
+
+# Runs on every PR: these drive a real bot draft but serve committed API
+# snapshots, so they make no third-party API calls at all. They are what catches
+# Draftmancer DOM drift - the class of bug that unit tests cannot see.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Two runs drafting at once would double the load on a hobby site for no gain.
+concurrency:
+  group: e2e-draftmancer-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  draftmancer:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npx playwright install --with-deps chromium
+
+      - run: npx playwright test --config playwright.config.mjs --project draftmancer
+
+      - if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-draftmancer
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14

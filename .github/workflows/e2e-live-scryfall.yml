@@ -1,0 +1,38 @@
+name: E2E (Scryfall API)
+
+# Scryfall's API is public and documented, and these tests make only a couple of
+# small requests, so a daily contract check is proportionate.
+on:
+  schedule:
+    # 06:17 UTC - an odd minute rather than the top of the hour, which is when
+    # GitHub's scheduler is most congested. See the jitter step below.
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: e2e-live-scryfall
+  cancel-in-progress: false
+
+jobs:
+  scryfall:
+    runs-on: ubuntu-latest
+
+    steps:
+      # GitHub cron has no randomness, so every repo on a given schedule fires
+      # at once. Sleep a random slice of an hour so this lands at a different
+      # time each day instead of hammering the same minute.
+      - name: Jitter
+        if: github.event_name == 'schedule'
+        run: sleep $((RANDOM % 3600))
+
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # No browser needed - these are plain HTTP contract checks.
+      - run: npx playwright test --config playwright.config.mjs --project live-scryfall
