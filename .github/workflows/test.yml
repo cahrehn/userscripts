@@ -21,7 +21,25 @@ jobs:
       # lockfile is out of sync with package.json.
       - run: npm ci
 
-      - run: npm test
+      # Runs the suite and collects coverage in one pass.
+      - run: npm run coverage
+
+      # Renders the coverage table onto the run page and the PR's checks tab.
+      # `if: always()` so the numbers still appear when a test fails - that is
+      # exactly when you want to see what is and is not covered.
+      - name: Coverage summary
+        if: always()
+        run: node scripts/coverage-summary.mjs
+
+      # Keeps the lcov + HTML report for download, and gives a later e2e job
+      # something to merge its own coverage with.
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 14
 
       # Catches a syntax error in the userscript even if no test imports the
       # affected code path.
