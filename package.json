@@ -1,0 +1,14 @@
+{
+  "name": "mtg-draft-gih-wr-overlay",
+  "version": "3.4.0",
+  "private": true,
+  "description": "Userscript showing 17Lands Game-In-Hand win rates on Draftmancer and 17Lands",
+  "license": "MIT",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^5.0.0"
+  }
+}
