@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         MTG Draft GIH WR Overlay
 // @namespace    http://tampermonkey.net/
-// @version      3.3
-// @description  Toggle overlay showing Game In Hand win rates for MTG cards on Draftmancer and 17Lands
+// @version      3.4
+// @description  Toggle overlay showing Game In Hand win rates for MTG cards on Draftmancer and 17Lands, optionally filtered by deck colours
 // @author       You
 // @match        https://draftmancer.com/*
 // @match        https://www.17lands.com/*
@@ -23,6 +23,21 @@
     let manualExpansion = null;
     let dataLoaded = false;
     let currentSite = null;
+    let colorFilter = null; // e.g. "WU" - restricts 17Lands data to decks of these colors
+    let lastLoadError = null; // surfaced on the Colors button when a fetch comes back empty
+
+    // 17Lands only recognises colour pairs in canonical WUBRG order: colors=WU
+    // returns data, colors=UW returns an empty array with a 200, which would
+    // otherwise look like "this set has no cards". Everything the user picks is
+    // funnelled through here so the request is always in the order the API wants.
+    const WUBRG = ['W', 'U', 'B', 'R', 'G'];
+
+    function normalizeColors(input) {
+        const seen = new Set(
+            String(input || '').toUpperCase().split('').filter(ch => WUBRG.includes(ch))
+        );
+        return WUBRG.filter(ch => seen.has(ch)).join('');
+    }
 
     // Resolve whichever cross-origin request helper this userscript runtime
     // provides. Tampermonkey/Violentmonkey expose GM_xmlhttpRequest; the iOS
@@ -254,12 +269,15 @@
         currentExpansion = expansion;
 
         try {
-            console.log(`Fetching card data for ${expansion}...`);
+            console.log(`Fetching card data for ${expansion}${colorFilter ? ` (colors=${colorFilter})` : ''}...`);
 
             // Use the current 17Lands API (the old card_ratings/data endpoint with
             // start_date/end_date is legacy and returns a much smaller, stale-looking
             // dataset). time_period=ALL_TIME pulls the full sample 17Lands has.
-            const url = `https://www.17lands.com/api/card_data?expansion=${expansion}&event_type=PremierDraft&time_period=ALL_TIME`;
+            let url = `https://www.17lands.com/api/card_data?expansion=${expansion}&event_type=PremierDraft&time_period=ALL_TIME`;
+            if (colorFilter) {
+                url += `&colors=${colorFilter}`;
+            }
 
             console.log(`API URL: ${url}`);
 
@@ -277,9 +295,17 @@
             const responseBody = await response.json();
             const data = responseBody.data || [];
 
-            // Swapped in only now that a usable response has arrived. Clearing
-            // it before the request meant any failure (offline reload, 5xx,
-            // malformed JSON) left every overlay blank until the next success.
+            // 17Lands answers an unusable colors= value with a 200 and an empty
+            // array rather than an error, and a legitimate but rare pair can come
+            // back empty too. Keep the previous dataset rather than blanking every
+            // overlay, and tell the user which case they are in.
+            if (colorFilter && data.length === 0) {
+                console.warn(`No ${expansion} data for colors=${colorFilter} - keeping previous data. Try a different pair.`);
+                lastLoadError = `No data for ${colorFilter}`;
+                return;
+            }
+
+            lastLoadError = null;
             cardData = {};
 
             data.forEach(card => {
@@ -325,6 +351,7 @@
             const cache = {
                 data: cardData,
                 expansion: currentExpansion,
+                colors: colorFilter || '',
                 timestamp: Date.now()
             };
             localStorage.setItem('gihWRCache', JSON.stringify(cache));
@@ -340,6 +367,14 @@
             if (cached) {
                 const cache = JSON.parse(cached);
                 const age = Date.now() - cache.timestamp;
+
+                // A cache written under a colour filter holds that archetype's
+                // win rates, not the set's. Restoring it for a different filter
+                // would quietly show the wrong numbers, so treat it as a miss.
+                if ((cache.colors || '') !== (colorFilter || '')) {
+                    console.log('Cached data was for a different colour filter - ignoring');
+                    return false;
+                }
 
                 if (age < 24 * 60 * 60 * 1000) {
                     cardData = cache.data;
@@ -469,9 +504,9 @@
     // Drop everything and re-fetch for the active expansion
     function reloadData() {
         console.log('Reloading card data...');
-        // cardData is deliberately left alone: loadCardData swaps it only once a
-        // usable response arrives, so a failed reload keeps the overlays that are
-        // already on screen instead of blanking them.
+        // cardData is deliberately left alone here: loadCardData swaps it only
+        // once a usable response arrives, so a colour pair with no games keeps
+        // the overlays that are already on screen instead of blanking them.
         scryfallToName = {};
         dataLoaded = false;
 
@@ -501,6 +536,28 @@
         saveUIState({ manualExpansion: expansion, manualExpansionAt: Date.now() });
         console.log(`Manual expansion override set to: ${manualExpansion}`);
         reloadData();
+    }
+
+    // Apply a colour-pair filter (or clear it when given nothing) and reload.
+    // Persisted with a timestamp like the expansion override so a phone that
+    // reloads mid-draft keeps the archetype, but a stale pair cannot outlive
+    // the day it was set.
+    function applyColors(input) {
+        const colors = normalizeColors(input);
+        const next = colors || null;
+
+        if (next === colorFilter) {
+            updateControls();
+            return Promise.resolve();
+        }
+
+        colorFilter = next;
+        lastLoadError = null;
+        saveUIState({ colorFilter: colorFilter || '', colorFilterAt: Date.now() });
+        console.log(colorFilter
+            ? `Colour filter set to: ${colorFilter}`
+            : 'Colour filter cleared - showing overall win rates');
+        return reloadData();
     }
 
     function showOverlays() {
@@ -600,6 +657,9 @@
 
     const UI_STATE_KEY = 'gihWROverlayUI';
     const MANUAL_EXPANSION_TTL = 24 * 60 * 60 * 1000;
+    // Shorter than the expansion TTL: you draft the same set for days, but a
+    // colour pair belongs to one draft (~1 hour).
+    const COLOR_FILTER_TTL = 3 * 60 * 60 * 1000;
     let controls = null;
 
     function loadUIState() {
@@ -675,8 +735,10 @@
 
         const menuCss = 'min-height: 44px; padding: 0 14px; font-size: 14px; border-radius: 22px;';
         const setButton = makeButton('Set: —', 'Set expansion code', menuCss);
+        const colorsButton = makeButton('Colors: Any', 'Filter win rates by deck colours', menuCss);
         const reloadButton = makeButton('Reload data', 'Reload 17Lands data', menuCss);
         menu.appendChild(setButton);
+        menu.appendChild(colorsButton);
         menu.appendChild(reloadButton);
 
         const row = document.createElement('div');
@@ -711,6 +773,11 @@
         setButton.addEventListener('click', () => {
             closeMenu();
             openExpansionDialog();
+        });
+
+        colorsButton.addEventListener('click', () => {
+            closeMenu();
+            openColorsDialog();
         });
 
         // Drag support: the cluster sits on top of the pick UI on small screens,
@@ -790,7 +857,7 @@
         window.addEventListener('resize', reclamp);
         window.addEventListener('orientationchange', reclamp);
 
-        controls = { root, toggleButton, setButton, menu };
+        controls = { root, toggleButton, setButton, colorsButton, menu };
         updateControls();
         return controls;
     }
@@ -798,7 +865,7 @@
     function updateControls() {
         if (!controls) return;
 
-        const { root, toggleButton, setButton } = controls;
+        const { root, toggleButton, setButton, colorsButton } = controls;
         toggleButton.setAttribute('aria-pressed', String(overlayEnabled));
         toggleButton.style.background = overlayEnabled ? 'rgba(96, 165, 250, 0.95)' : 'rgba(0, 0, 0, 0.8)';
         toggleButton.style.color = overlayEnabled ? '#0b1220' : '#e0e7ff';
@@ -809,6 +876,17 @@
         setButton.title = manualExpansion
             ? `Expansion manually set to ${manualExpansion} - tap to change`
             : 'Set expansion code';
+
+        colorsButton.textContent = lastLoadError
+            ? `Colors: ${lastLoadError}`
+            : `Colors: ${colorFilter || 'Any'}`;
+        colorsButton.title = colorFilter
+            ? `Win rates from ${colorFilter} decks - tap to change`
+            : 'Filter win rates by deck colours';
+        // Tint the row so an active filter is obvious at a glance - the numbers
+        // mean something different while it is on.
+        colorsButton.style.background = colorFilter ? 'rgba(96, 165, 250, 0.95)' : 'rgba(0, 0, 0, 0.8)';
+        colorsButton.style.color = colorFilter ? '#0b1220' : '#e0e7ff';
     }
 
     // Replaces prompt(): a real input we control, so it can force uppercase,
@@ -908,6 +986,155 @@
         input.select();
     }
 
+    // Colour-pair picker.
+    //
+    // Deliberately built from five tap targets rather than a text field. Typing
+    // "UW" into a text box would be normalised to "WU" anyway, and tapping two
+    // mana symbols is both faster on desktop and the only comfortable option on
+    // a phone, where the existing dialog pattern already works (it is a plain
+    // DOM overlay, not prompt(), so nothing here is desktop-only).
+    const COLOR_META = {
+        W: { label: 'W', name: 'White', bg: '#fffbeb', fg: '#3b2f14' },
+        U: { label: 'U', name: 'Blue', bg: '#93c5fd', fg: '#0b1220' },
+        B: { label: 'B', name: 'Black', bg: '#6b7280', fg: '#0b1220' },
+        R: { label: 'R', name: 'Red', bg: '#fca5a5', fg: '#3b1414' },
+        G: { label: 'G', name: 'Green', bg: '#86efac', fg: '#0f2417' }
+    };
+
+    function openColorsDialog() {
+        const previous = document.querySelector('.gih-wr-dialog');
+        if (previous) previous.remove();
+
+        const backdrop = document.createElement('div');
+        backdrop.className = 'gih-wr-dialog';
+        backdrop.style.cssText = `
+            position: fixed;
+            inset: 0;
+            z-index: 2147483001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.55);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        `;
+
+        const panel = document.createElement('div');
+        panel.style.cssText = `
+            width: min(340px, 100%);
+            box-sizing: border-box;
+            padding: 16px;
+            border-radius: 12px;
+            background: #111827;
+            color: #e0e7ff;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        `;
+
+        const label = document.createElement('div');
+        label.textContent = 'Deck colours';
+        label.style.cssText = 'font-size: 14px; font-weight: bold; margin-bottom: 4px;';
+
+        const hint = document.createElement('div');
+        hint.style.cssText = 'font-size: 12px; opacity: 0.75; margin-bottom: 12px;';
+
+        // Working copy - nothing is fetched until Apply, so half-made
+        // selections never trigger a request.
+        let selected = new Set((colorFilter || '').split('').filter(Boolean));
+
+        const swatchRow = document.createElement('div');
+        swatchRow.style.cssText = 'display: flex; gap: 8px; justify-content: space-between;';
+
+        const swatches = WUBRG.map(ch => {
+            const meta = COLOR_META[ch];
+            const button = makeButton(meta.label, meta.name,
+                'flex: 1; min-width: 0; height: 52px; font-size: 18px; border-radius: 10px;');
+            button.addEventListener('click', () => {
+                if (selected.has(ch)) {
+                    selected.delete(ch);
+                } else {
+                    selected.add(ch);
+                }
+                render();
+            });
+            swatchRow.appendChild(button);
+            return { ch, button, meta };
+        });
+
+        const row = document.createElement('div');
+        row.style.cssText = 'display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px;';
+
+        const dialogButtonCss = 'min-height: 44px; padding: 0 16px; font-size: 14px; border-radius: 8px;';
+        const clearButton = makeButton('Clear', 'Show overall win rates', dialogButtonCss + 'margin-right: auto;');
+        const cancelButton = makeButton('Cancel', 'Cancel', dialogButtonCss);
+        const applyButton = makeButton('Apply', 'Apply colour filter',
+            dialogButtonCss + 'background: rgba(96, 165, 250, 0.95); color: #0b1220;');
+
+        function render() {
+            const chosen = WUBRG.filter(ch => selected.has(ch)).join('');
+            swatches.forEach(({ ch, button, meta }) => {
+                const on = selected.has(ch);
+                button.style.background = on ? meta.bg : 'rgba(0, 0, 0, 0.8)';
+                button.style.color = on ? meta.fg : '#e0e7ff';
+                button.style.borderColor = on ? meta.bg : 'rgba(255, 255, 255, 0.25)';
+                button.setAttribute('aria-pressed', String(on));
+            });
+            hint.textContent = chosen
+                ? `17Lands win rates from ${chosen} decks only.`
+                : 'No filter - showing overall win rates.';
+            applyButton.textContent = chosen ? `Apply ${chosen}` : 'Apply';
+        }
+
+        const close = () => {
+            document.removeEventListener('keydown', onKey, true);
+            backdrop.remove();
+        };
+        const apply = () => {
+            const chosen = WUBRG.filter(ch => selected.has(ch)).join('');
+            close();
+            applyColors(chosen);
+        };
+
+        clearButton.addEventListener('click', () => { selected = new Set(); render(); });
+        cancelButton.addEventListener('click', close);
+        applyButton.addEventListener('click', apply);
+        backdrop.addEventListener('click', (e) => {
+            if (e.target === backdrop) close();
+        });
+
+        // There is no text input to hang key handling off, so listen at the
+        // document (capture) and stop the page from also acting on the keys.
+        function onKey(e) {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
+                close();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                e.stopPropagation();
+                apply();
+            } else if (/^[wubrgWUBRG]$/.test(e.key)) {
+                e.preventDefault();
+                e.stopPropagation();
+                const ch = e.key.toUpperCase();
+                if (selected.has(ch)) selected.delete(ch); else selected.add(ch);
+                render();
+            }
+        }
+        document.addEventListener('keydown', onKey, true);
+
+        row.appendChild(clearButton);
+        row.appendChild(cancelButton);
+        row.appendChild(applyButton);
+        panel.appendChild(label);
+        panel.appendChild(hint);
+        panel.appendChild(swatchRow);
+        panel.appendChild(row);
+        backdrop.appendChild(panel);
+        document.body.appendChild(backdrop);
+
+        render();
+    }
+
     // Keyboard shortcut handler (desktop / iPad with a hardware keyboard)
     function handleKeyPress(e) {
         if (!(e.ctrlKey || e.metaKey) || !e.shiftKey) return;
@@ -929,6 +1156,12 @@
             e.preventDefault();
             openExpansionDialog();
         }
+
+        // Colour-pair filter with Ctrl+Shift+C
+        if (e.key === 'C') {
+            e.preventDefault();
+            openColorsDialog();
+        }
     }
 
     // Initialize
@@ -946,6 +1179,7 @@
         console.log('  Ctrl+Shift+A - Toggle overlay');
         console.log('  Ctrl+Shift+R - Reload data');
         console.log('  Ctrl+Shift+S - Manually set expansion code');
+        console.log('  Ctrl+Shift+C - Set deck colour filter (e.g. WU)');
         console.log('On touch devices use the WR button in the corner (drag to move it).');
 
         // Restore a recent manual override so iPad users do not have to retype
@@ -955,6 +1189,14 @@
         if (uiState.manualExpansion && Date.now() - (uiState.manualExpansionAt || 0) < MANUAL_EXPANSION_TTL) {
             manualExpansion = uiState.manualExpansion;
             console.log(`Restored manual expansion override: ${manualExpansion}`);
+        }
+
+        // Same deal for the colour filter: a phone backgrounding the tab mid-draft
+        // should not lose the archetype, but it expires so it cannot silently
+        // colour a later session's numbers.
+        if (uiState.colorFilter && Date.now() - (uiState.colorFilterAt || 0) < COLOR_FILTER_TTL) {
+            colorFilter = normalizeColors(uiState.colorFilter) || null;
+            if (colorFilter) console.log(`Restored colour filter: ${colorFilter}`);
         }
 
         document.addEventListener('keydown', handleKeyPress);
