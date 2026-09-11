@@ -670,28 +670,36 @@
     // New-draft detection
     //
     // A colour filter is only meaningful for the draft it was chosen in, so it
-    // has to reset when a new one starts. Draftmancer renders the active
-    // drafter's position as "Pack #N, Pick #M" inside #booster-controls, which
-    // is the one unambiguous signal available from the DOM: seeing pack 1 /
-    // pick 1 after having been deeper into a draft means a new draft began.
-    // (Watching for the pool emptying is unreliable - the pool is also empty
-    // during the pre-draft lobby, which would clear a filter set while waiting
-    // to fire.)
+    // has to reset when a new one starts.
+    //
+    // Draftmancer renders the drafter's position as "Pack #N, Pick #M" inside
+    // #booster-controls. The number after "Pick #" is NOT a per-pack index: it
+    // counts DOWN as the draft proceeds (173, 170, 168, 165, ... observed live)
+    // and never reaches 1. An earlier version of this looked for pick === 1,
+    // which simply never happened, so the reset never fired.
+    //
+    // What does hold is that the counter only ever decreases within a draft, and
+    // a new draft starts it again from its maximum. So a new draft is an upward
+    // jump in that number. The pack number is a real index and is used to keep
+    // a pack rollover from being mistaken for one.
+    //
+    // Other signals were tried and rejected: #booster-controls survives a
+    // stopped draft, and Draftmancer restores the session across a reload, so
+    // neither the element disappearing nor a page load marks a new draft.
     //
     // 17Lands has no draft to track - it is a stats site, so the filter simply
     // persists there until changed or cleared.
     // ---------------------------------------------------------------------
 
     let lastDraftPosition = null;
-    // Set once we have handled the P1P1 we are currently sitting on, so repeated
-    // re-renders of the same first pick do not re-fire the reset. Cleared as soon
-    // as the draft moves off P1P1, which arms the next draft's reset.
-    let handledCurrentStart = false;
 
     function readDraftPosition() {
         const controlsEl = document.querySelector('#booster-controls');
         if (!controlsEl) return null;
 
+        // "Your Booster (14)Pack #1, Pick #173Pick a card" - the trailing prompt
+        // runs straight into the number, so the digits are bounded explicitly
+        // rather than relying on a word boundary.
         const match = controlsEl.textContent.match(/Pack\s*#(\d+),\s*Pick\s*#(\d+)/i);
         if (!match) return null;
 
@@ -702,24 +710,20 @@
         const position = readDraftPosition();
         if (!position) return;
 
+        const previous = lastDraftPosition;
         lastDraftPosition = position;
 
-        const atStart = position.pack === 1 && position.pick === 1;
+        // Nothing to compare against yet - this is the first position seen.
+        if (!previous) return;
 
-        // Off P1P1: arm the reset so the next time we land on a first pick it
-        // counts as a new draft.
-        if (!atStart) {
-            handledCurrentStart = false;
-            return;
-        }
+        // Within a draft the pick counter only decreases, and a later pack never
+        // raises it. An increase means the counter restarted: a new draft.
+        const restarted = position.pick > previous.pick;
+        const wentBackAPack = position.pack < previous.pack;
 
-        // On P1P1. Fire once per arrival, not once per re-render - Draftmancer
-        // rebuilds this subtree on every render, so this runs many times per pick.
-        if (handledCurrentStart) return;
-        handledCurrentStart = true;
-
-        if (colorFilter) {
-            console.log('New draft detected (Pack #1, Pick #1) - clearing colour filter');
+        if ((restarted || wentBackAPack) && colorFilter) {
+            console.log(
+                `New draft detected (pick counter ${previous.pick} -> ${position.pick}) - clearing colour filter`);
             clearColors();
         }
     }
@@ -1281,13 +1285,11 @@
         createControls();
         observeCards();
 
-        // Seed the baseline so an in-progress draft does not read as a brand new
-        // one on the first mutation after a page reload. Loading directly into a
-        // P1P1 means the restored filter belongs to *that* draft (you set it, then
-        // reloaded), so treat its start as already handled.
+        // Seed the baseline so the first observation after a page load has
+        // something to compare against. Draftmancer restores the session across a
+        // reload, so without this the resumed draft's first reading would look
+        // like a jump and clear a filter that is still current.
         lastDraftPosition = readDraftPosition();
-        handledCurrentStart = !!lastDraftPosition &&
-            lastDraftPosition.pack === 1 && lastDraftPosition.pick === 1;
 
         // Wait for page to load
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -1342,10 +1344,8 @@
             __getColorFilter: () => colorFilter,
             __resetDraftState: (position) => {
                 lastDraftPosition = position || null;
-                handledCurrentStart = !!lastDraftPosition &&
-                    lastDraftPosition.pack === 1 && lastDraftPosition.pick === 1;
             },
-            __getDraftState: () => ({ lastDraftPosition, handledCurrentStart })
+            __getDraftState: () => ({ lastDraftPosition })
         };
         return;
     }
