@@ -255,7 +255,6 @@
 
         try {
             console.log(`Fetching card data for ${expansion}...`);
-            cardData = {};
 
             // Use the current 17Lands API (the old card_ratings/data endpoint with
             // start_date/end_date is legacy and returns a much smaller, stale-looking
@@ -277,6 +276,11 @@
 
             const responseBody = await response.json();
             const data = responseBody.data || [];
+
+            // Swapped in only now that a usable response has arrived. Clearing
+            // it before the request meant any failure (offline reload, 5xx,
+            // malformed JSON) left every overlay blank until the next success.
+            cardData = {};
 
             data.forEach(card => {
                 // 17Lands sometimes nulls out ever_drawn_win_rate (esp. on freshly
@@ -465,7 +469,9 @@
     // Drop everything and re-fetch for the active expansion
     function reloadData() {
         console.log('Reloading card data...');
-        cardData = {};
+        // cardData is deliberately left alone: loadCardData swaps it only once a
+        // usable response arrives, so a failed reload keeps the overlays that are
+        // already on screen instead of blanking them.
         scryfallToName = {};
         dataLoaded = false;
 
