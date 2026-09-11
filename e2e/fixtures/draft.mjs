@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect } from '@playwright/test';
-import { get17LandsData, getScryfallCards } from './live-data.mjs';
+import { offline17LandsData, offlineScryfallCards } from './offline-data.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const USERSCRIPT = join(HERE, '..', '..', 'mtg-draft-gih-wr-overlay.js');
@@ -16,24 +16,20 @@ export const OVERLAY = '.gih-wr-overlay';
 export const BOOSTER_CARD = '.card.booster-card';
 
 /**
- * Serve real (but locally cached) API data to the page.
+ * Serve committed API snapshots to the page - no network beyond Draftmancer.
  *
- * 17Lands must be routed: it sends no CORS headers, so the page's own fetch is
- * blocked. Scryfall does send them, but is routed too so a test run makes no
- * third-party requests beyond the one cached fetch per day.
+ * 17Lands must be routed regardless: it sends no CORS headers, so the page's own
+ * fetch is blocked outright. Scryfall is routed too, so these tests touch no
+ * third-party API at all - which is what lets them run on every PR.
  */
 export async function routeApis(page, { expansion }) {
-    const cardData = await get17LandsData(expansion);
-
     await page.route('**://www.17lands.com/api/card_data**', async (route) => {
         const colors = new URL(route.request().url()).searchParams.get('colors');
-        // Colour-filtered requests get the real filtered dataset.
-        const body = colors ? await get17LandsData(expansion, colors) : cardData;
         await route.fulfill({
             status: 200,
             contentType: 'application/json',
             headers: { 'Access-Control-Allow-Origin': '*' },
-            body: JSON.stringify(body)
+            body: JSON.stringify(offline17LandsData(expansion, colors))
         });
     });
 
@@ -41,16 +37,13 @@ export async function routeApis(page, { expansion }) {
         const ids = (JSON.parse(route.request().postData() || '{}').identifiers || [])
             .map(i => i.id)
             .filter(Boolean);
-        const body = ids.length ? await getScryfallCards(ids) : { data: [] };
         await route.fulfill({
             status: 200,
             contentType: 'application/json',
             headers: { 'Access-Control-Allow-Origin': '*' },
-            body: JSON.stringify(body)
+            body: JSON.stringify(offlineScryfallCards(ids))
         });
     });
-
-    return cardData;
 }
 
 /** Inject the userscript exactly as a manager would, before the page scripts run. */

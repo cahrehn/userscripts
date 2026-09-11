@@ -1,0 +1,38 @@
+name: E2E (17Lands API)
+
+# The 17Lands API is NOT officially public, so this is deliberately the rarest
+# job in the repo: once a week, two requests, no browser. It exists only to
+# notice if the response shape the overlay parses has changed.
+on:
+  schedule:
+    # Sunday 04:43 UTC, jittered below. Weekly rather than daily, and at a quiet
+    # hour, to keep the footprint on someone else's API as small as possible.
+    - cron: '43 4 * * 0'
+  workflow_dispatch:
+
+concurrency:
+  group: e2e-live-17lands
+  cancel-in-progress: false
+
+jobs:
+  seventeen-lands:
+    runs-on: ubuntu-latest
+
+    steps:
+      # GitHub cron fires on the minute for every repo sharing a schedule. Sleep
+      # a random slice of two hours so the weekly hit lands somewhere different
+      # each time rather than in a predictable thundering herd.
+      - name: Jitter
+        if: github.event_name == 'schedule'
+        run: sleep $((RANDOM % 7200))
+
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npx playwright test --config playwright.config.mjs --project live-17lands

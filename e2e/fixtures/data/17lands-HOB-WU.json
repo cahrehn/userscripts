@@ -1,0 +1,1697 @@
+{
+"copyright": "(c) 2026 17Lands LLC",
+"data": [
+{
+"name": "Long-Bodied Grey Dog",
+"mtga_id": 103368,
+"color": "",
+"rarity": "common",
+"ever_drawn_win_rate": 0.52708732,
+"win_rate": 0.52095059,
+"game_count": 3198
+},
+{
+"name": "Old Thrush",
+"mtga_id": 103369,
+"color": "",
+"rarity": "common",
+"ever_drawn_win_rate": 0.54800096,
+"win_rate": 0.5305241,
+"game_count": 8567
+},
+{
+"name": "Troop of Ponies",
+"mtga_id": 103370,
+"color": "",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.55039732,
+"win_rate": 0.54099379,
+"game_count": 4830
+},
+{
+"name": "Belladonna Took",
+"mtga_id": 103371,
+"color": "W",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.52775521,
+"win_rate": 0.52207476,
+"game_count": 7384
+},
+{
+"name": "Bilbo's Gambit",
+"mtga_id": 103372,
+"color": "W",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.47284345,
+"win_rate": 0.46720707,
+"game_count": 1357
+},
+{
+"name": "Bofur, Reliable Guardian",
+"mtga_id": 103373,
+"color": "W",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.57237039,
+"win_rate": 0.55180326,
+"game_count": 20047
+},
+{
+"name": "Celebrate the Mountain-king",
+"mtga_id": 103375,
+"color": "W",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.63711292,
+"win_rate": 0.58976815,
+"game_count": 50118
+},
+{
+"name": "D\u00e1in, Lord of the Iron Hills",
+"mtga_id": 103376,
+"color": "W",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.54529915,
+"win_rate": 0.52910755,
+"game_count": 14309
+},
+{
+"name": "Dwarven Provisioner",
+"mtga_id": 103377,
+"color": "W",
+"rarity": "common",
+"ever_drawn_win_rate": 0.56980591,
+"win_rate": 0.55472632,
+"game_count": 50113
+},
+{
+"name": "Dwarven Shortsword",
+"mtga_id": 103378,
+"color": "W",
+"rarity": "common",
+"ever_drawn_win_rate": 0.52654352,
+"win_rate": 0.52207451,
+"game_count": 12186
+},
+{
+"name": "Eagle of the Great Shelf",
+"mtga_id": 103379,
+"color": "W",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.52015908,
+"win_rate": 0.50809237,
+"game_count": 14767
+},
+{
+"name": "The Eagles Are Coming!",
+"mtga_id": 103380,
+"color": "W",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.61763093,
+"win_rate": 0.57122688,
+"game_count": 14166
+},
+{
+"name": "Esgaroth Garrison",
+"mtga_id": 103381,
+"color": "W",
+"rarity": "common",
+"ever_drawn_win_rate": 0.57118872,
+"win_rate": 0.54957736,
+"game_count": 35964
+},
+{
+"name": "F\u00edli the Pathfinder",
+"mtga_id": 103382,
+"color": "W",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.64792627,
+"win_rate": 0.59597849,
+"game_count": 8554
+},
+{
+"name": "Gleaming Splendor",
+"mtga_id": 103383,
+"color": "W",
+"rarity": "mythic",
+"ever_drawn_win_rate": null,
+"win_rate": 0.42414356,
+"game_count": 613
+},
+{
+"name": "Iron Hills Blacksmith",
+"mtga_id": 103384,
+"color": "W",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.58263692,
+"win_rate": 0.55985872,
+"game_count": 24349
+},
+{
+"name": "K\u00edli the Resourceful",
+"mtga_id": 103385,
+"color": "W",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.58469945,
+"win_rate": 0.54764065,
+"game_count": 4408
+},
+{
+"name": "Lake-town Lookout",
+"mtga_id": 103386,
+"color": "W",
+"rarity": "common",
+"ever_drawn_win_rate": 0.52234051,
+"win_rate": 0.51333835,
+"game_count": 23916
+},
+{
+"name": "Lake-town Toymaker",
+"mtga_id": 103387,
+"color": "W",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.54060971,
+"win_rate": 0.53079779,
+"game_count": 26398
+},
+{
+"name": "Magnificent End",
+"mtga_id": 103388,
+"color": "W",
+"rarity": "common",
+"ever_drawn_win_rate": 0.57679197,
+"win_rate": 0.55896151,
+"game_count": 81426
+},
+{
+"name": "Moment of Glory",
+"mtga_id": 103389,
+"color": "W",
+"rarity": "common",
+"ever_drawn_win_rate": 0.54219296,
+"win_rate": 0.53042556,
+"game_count": 15086
+},
+{
+"name": "The Mountain-king's Return",
+"mtga_id": 103390,
+"color": "W",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.6279061,
+"win_rate": 0.58405043,
+"game_count": 51713
+},
+{
+"name": "Ori, Keeper of Songs",
+"mtga_id": 103391,
+"color": "W",
+"rarity": "common",
+"ever_drawn_win_rate": 0.54714745,
+"win_rate": 0.53168985,
+"game_count": 12007
+},
+{
+"name": "The Queen of Dale",
+"mtga_id": 103392,
+"color": "W",
+"rarity": "mythic",
+"ever_drawn_win_rate": 0.58706468,
+"win_rate": 0.55828995,
+"game_count": 6339
+},
+{
+"name": "Roads Go Ever, Ever On",
+"mtga_id": 103393,
+"color": "W",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.57406985,
+"win_rate": 0.5575361,
+"game_count": 8864
+},
+{
+"name": "Settle the Wreckage",
+"mtga_id": 103394,
+"color": "W",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.6024077,
+"win_rate": 0.56997559,
+"game_count": 12290
+},
+{
+"name": "Stone by Sunlight",
+"mtga_id": 103395,
+"color": "W",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.61304555,
+"win_rate": 0.57667429,
+"game_count": 45452
+},
+{
+"name": "Thorin's Last Stand",
+"mtga_id": 103396,
+"color": "W",
+"rarity": "common",
+"ever_drawn_win_rate": 0.50810137,
+"win_rate": 0.4963761,
+"game_count": 5105
+},
+{
+"name": "An Unexpected Party",
+"mtga_id": 103397,
+"color": "W",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.6577269,
+"win_rate": 0.59971049,
+"game_count": 11744
+},
+{
+"name": "Velvetwing Butterflies",
+"mtga_id": 103399,
+"color": "W",
+"rarity": "common",
+"ever_drawn_win_rate": 0.52722246,
+"win_rate": 0.51239285,
+"game_count": 19366
+},
+{
+"name": "Vow to Erebor",
+"mtga_id": 103401,
+"color": "W",
+"rarity": "common",
+"ever_drawn_win_rate": 0.43575419,
+"win_rate": 0.4404242,
+"game_count": 1603
+},
+{
+"name": "Bilbo, Luckwearer",
+"mtga_id": 103402,
+"color": "U",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.62306786,
+"win_rate": 0.58224981,
+"game_count": 54298
+},
+{
+"name": "Bilbo, Thief in the Night",
+"mtga_id": 103404,
+"color": "U",
+"rarity": "mythic",
+"ever_drawn_win_rate": 0.60091444,
+"win_rate": 0.56621689,
+"game_count": 6003
+},
+{
+"name": "Bilbo Baggins, Burglar",
+"mtga_id": 103405,
+"color": "U",
+"rarity": "common",
+"ever_drawn_win_rate": 0.58899013,
+"win_rate": 0.56555525,
+"game_count": 110670
+},
+{
+"name": "Confusticate and Bebother",
+"mtga_id": 103407,
+"color": "U",
+"rarity": "common",
+"ever_drawn_win_rate": 0.55111419,
+"win_rate": 0.53118008,
+"game_count": 41116
+},
+{
+"name": "Elrond, Moon-Reader",
+"mtga_id": 103408,
+"color": "U",
+"rarity": "mythic",
+"ever_drawn_win_rate": 0.5,
+"win_rate": 0.5,
+"game_count": 2042
+},
+{
+"name": "Elven Raft-Steerer",
+"mtga_id": 103409,
+"color": "U",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.50170184,
+"win_rate": 0.47104247,
+"game_count": 3108
+},
+{
+"name": "Elvenking's Harper",
+"mtga_id": 103410,
+"color": "U",
+"rarity": "common",
+"ever_drawn_win_rate": 0.54831933,
+"win_rate": 0.53471768,
+"game_count": 18348
+},
+{
+"name": "Enchanted River's Grasp",
+"mtga_id": 103411,
+"color": "U",
+"rarity": "common",
+"ever_drawn_win_rate": 0.56754554,
+"win_rate": 0.55014857,
+"game_count": 84808
+},
+{
+"name": "Fateful Discovery",
+"mtga_id": 103412,
+"color": "U",
+"rarity": "mythic",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 33
+},
+{
+"name": "Gandalf, Wandering Wizard",
+"mtga_id": 103413,
+"color": "U",
+"rarity": "common",
+"ever_drawn_win_rate": 0.5184386,
+"win_rate": 0.50299342,
+"game_count": 10189
+},
+{
+"name": "Great Gilded Boat",
+"mtga_id": 103414,
+"color": "U",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.63608087,
+"win_rate": 0.58471886,
+"game_count": 18585
+},
+{
+"name": "Lakeshore Apothecary",
+"mtga_id": 103415,
+"color": "U",
+"rarity": "common",
+"ever_drawn_win_rate": 0.58829432,
+"win_rate": 0.56692369,
+"game_count": 147586
+},
+{
+"name": "Lake-town Mariners",
+"mtga_id": 103416,
+"color": "U",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.51859699,
+"win_rate": 0.50855491,
+"game_count": 8650
+},
+{
+"name": "Long Lake Nuisance",
+"mtga_id": 103418,
+"color": "U",
+"rarity": "common",
+"ever_drawn_win_rate": 0.59002668,
+"win_rate": 0.56718472,
+"game_count": 122059
+},
+{
+"name": "The Lord of the Eagles",
+"mtga_id": 103419,
+"color": "U",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.53827679,
+"win_rate": 0.52728614,
+"game_count": 6780
+},
+{
+"name": "Master's Councillors",
+"mtga_id": 103420,
+"color": "U",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.60174561,
+"win_rate": 0.57385677,
+"game_count": 62892
+},
+{
+"name": "Mirkwood Meditator",
+"mtga_id": 103421,
+"color": "U",
+"rarity": "common",
+"ever_drawn_win_rate": 0.5,
+"win_rate": 0.47983871,
+"game_count": 1240
+},
+{
+"name": "Most Decrepit Old Bird",
+"mtga_id": 103422,
+"color": "U",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.56914082,
+"win_rate": 0.54298993,
+"game_count": 7746
+},
+{
+"name": "Old Fat Spider Can't See Me",
+"mtga_id": 103424,
+"color": "U",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.54400568,
+"win_rate": 0.52590518,
+"game_count": 19996
+},
+{
+"name": "Plunder the Trollshaws",
+"mtga_id": 103425,
+"color": "U",
+"rarity": "common",
+"ever_drawn_win_rate": 0.60608668,
+"win_rate": 0.57408437,
+"game_count": 118716
+},
+{
+"name": "Ravenhill Flock",
+"mtga_id": 103426,
+"color": "U",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.53516598,
+"win_rate": 0.51544462,
+"game_count": 19230
+},
+{
+"name": "Riddles in the Dark",
+"mtga_id": 103427,
+"color": "U",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.53527981,
+"win_rate": 0.5100304,
+"game_count": 3290
+},
+{
+"name": "Roll-Roll-Roll-Roll",
+"mtga_id": 103428,
+"color": "U",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.46692607,
+"win_rate": 0.47249191,
+"game_count": 1545
+},
+{
+"name": "Sound the Trumpets",
+"mtga_id": 103429,
+"color": "U",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.56173041,
+"win_rate": 0.54152259,
+"game_count": 18219
+},
+{
+"name": "Thranduil's Decree",
+"mtga_id": 103430,
+"color": "U",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.53295845,
+"win_rate": 0.51153137,
+"game_count": 6504
+},
+{
+"name": "Uncover the Moon-Letters",
+"mtga_id": 103431,
+"color": "U",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 459
+},
+{
+"name": "Uneasy Partings",
+"mtga_id": 103432,
+"color": "U",
+"rarity": "common",
+"ever_drawn_win_rate": 0.57217681,
+"win_rate": 0.55746253,
+"game_count": 74988
+},
+{
+"name": "Wizard's Staff",
+"mtga_id": 103433,
+"color": "U",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": 0.42279412,
+"game_count": 816
+},
+{
+"name": "Along the Crooked Way",
+"mtga_id": 103434,
+"color": "B",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 4
+},
+{
+"name": "Azog, Moria's Ruin",
+"mtga_id": 103435,
+"color": "B",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 12
+},
+{
+"name": "Bilbo's Deadly Slice",
+"mtga_id": 103436,
+"color": "B",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 40
+},
+{
+"name": "Crude Bent Blade",
+"mtga_id": 103437,
+"color": "B",
+"rarity": "common",
+"ever_drawn_win_rate": 0.51930502,
+"win_rate": 0.51631478,
+"game_count": 1042
+},
+{
+"name": "Desolation Prowler",
+"mtga_id": 103438,
+"color": "B",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 53
+},
+{
+"name": "Down, Down to Goblin-town",
+"mtga_id": 103439,
+"color": "B",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 103
+},
+{
+"name": "Dreaded Bat-Cloud",
+"mtga_id": 103440,
+"color": "B",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 26
+},
+{
+"name": "Front Porch Sentries",
+"mtga_id": 103441,
+"color": "B",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 0
+},
+{
+"name": "Gathering of Darkness",
+"mtga_id": 103442,
+"color": "B",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 24
+},
+{
+"name": "Gnashing of Teeth",
+"mtga_id": 103443,
+"color": "B",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 11
+},
+{
+"name": "Gollum, Riddle Master",
+"mtga_id": 103444,
+"color": "B",
+"rarity": "mythic",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 126
+},
+{
+"name": "Gollum, Silent Slinker",
+"mtga_id": 103445,
+"color": "B",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 60
+},
+{
+"name": "Gollum the Abandoned",
+"mtga_id": 103447,
+"color": "B",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 24
+},
+{
+"name": "Great Fierce Bee",
+"mtga_id": 103448,
+"color": "B",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 4
+},
+{
+"name": "Great Ugly-Looking Goblin",
+"mtga_id": 103449,
+"color": "B",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 0
+},
+{
+"name": "Head of the Hunt",
+"mtga_id": 103451,
+"color": "B",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 59
+},
+{
+"name": "Inside Information",
+"mtga_id": 103452,
+"color": "B",
+"rarity": "mythic",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 15
+},
+{
+"name": "The Master of Lake-town",
+"mtga_id": 103453,
+"color": "B",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 6
+},
+{
+"name": "Nighthowl Pursuer",
+"mtga_id": 103454,
+"color": "B",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 3
+},
+{
+"name": "Rage into the Valley",
+"mtga_id": 103455,
+"color": "B",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 88
+},
+{
+"name": "Ravening Warg",
+"mtga_id": 103456,
+"color": "B",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 5
+},
+{
+"name": "Reverent Howl",
+"mtga_id": 103457,
+"color": "B",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 16
+},
+{
+"name": "Rhovanion Rampager",
+"mtga_id": 103458,
+"color": "B",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 98
+},
+{
+"name": "The Sackville-Bagginses",
+"mtga_id": 103459,
+"color": "B",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 38
+},
+{
+"name": "Stir Up Trouble",
+"mtga_id": 103460,
+"color": "B",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 324
+},
+{
+"name": "Stony-Voiced Goblins",
+"mtga_id": 103461,
+"color": "B",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 37
+},
+{
+"name": "Supper for Spiders",
+"mtga_id": 103462,
+"color": "B",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 0
+},
+{
+"name": "Balin, Loremaster",
+"mtga_id": 103463,
+"color": "R",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 13
+},
+{
+"name": "Bombur, Gentle Dreamer",
+"mtga_id": 103464,
+"color": "R",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 51
+},
+{
+"name": "Bothersome Noisemaker",
+"mtga_id": 103465,
+"color": "R",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 382
+},
+{
+"name": "Burn, Burn, Tree and Fern",
+"mtga_id": 103466,
+"color": "R",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.58430718,
+"win_rate": 0.57398754,
+"game_count": 1284
+},
+{
+"name": "D\u00e1in Ironfoot",
+"mtga_id": 103467,
+"color": "R",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 353
+},
+{
+"name": "Desert Were-Worm",
+"mtga_id": 103468,
+"color": "R",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 2
+},
+{
+"name": "Desolation of Smaug",
+"mtga_id": 103469,
+"color": "R",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 60
+},
+{
+"name": "Dori, Bearer of Friends",
+"mtga_id": 103470,
+"color": "R",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 164
+},
+{
+"name": "Dwarven Mauler",
+"mtga_id": 103471,
+"color": "R",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 24
+},
+{
+"name": "Gandalf, Goblins' Bane",
+"mtga_id": 103472,
+"color": "R",
+"rarity": "mythic",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 137
+},
+{
+"name": "Gandalf, Spark Starter",
+"mtga_id": 103474,
+"color": "R",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 145
+},
+{
+"name": "Getaway Barrel",
+"mtga_id": 103475,
+"color": "R",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 0
+},
+{
+"name": "Gl\u00f3in the Mighty",
+"mtga_id": 103476,
+"color": "R",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 104
+},
+{
+"name": "Goblin-town Flunkies",
+"mtga_id": 103478,
+"color": "R",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 0
+},
+{
+"name": "Gundabad Opportunist",
+"mtga_id": 103479,
+"color": "R",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 19
+},
+{
+"name": "Iron Hills Stalwart",
+"mtga_id": 103480,
+"color": "R",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 5
+},
+{
+"name": "Last Light of Durin's Day",
+"mtga_id": 103481,
+"color": "R",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 0
+},
+{
+"name": "The Misty Mountains Cold",
+"mtga_id": 103482,
+"color": "R",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 145
+},
+{
+"name": "Misty Mountains Raider",
+"mtga_id": 103483,
+"color": "R",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 492
+},
+{
+"name": "\u00d3in the Brave",
+"mtga_id": 103484,
+"color": "R",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 118
+},
+{
+"name": "Pinecone Strike",
+"mtga_id": 103485,
+"color": "R",
+"rarity": "common",
+"ever_drawn_win_rate": 0.59597523,
+"win_rate": 0.53475513,
+"game_count": 1266
+},
+{
+"name": "Ragged Short Spear",
+"mtga_id": 103486,
+"color": "R",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 68
+},
+{
+"name": "Smaug, the Great Calamity",
+"mtga_id": 103487,
+"color": "R",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 336
+},
+{
+"name": "Smaug the Magnificent",
+"mtga_id": 103489,
+"color": "R",
+"rarity": "mythic",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 139
+},
+{
+"name": "Smaug's Fury",
+"mtga_id": 103490,
+"color": "R",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 0
+},
+{
+"name": "Snowslope Hunter",
+"mtga_id": 103491,
+"color": "R",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 53
+},
+{
+"name": "Stone-Giant of High Pass",
+"mtga_id": 103492,
+"color": "R",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 105
+},
+{
+"name": "Thorin, Mountain-king",
+"mtga_id": 103493,
+"color": "R",
+"rarity": "mythic",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 73
+},
+{
+"name": "Tidings of War",
+"mtga_id": 103494,
+"color": "R",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 36
+},
+{
+"name": "Attercop",
+"mtga_id": 103495,
+"color": "G",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 100
+},
+{
+"name": "Bejeweled Warg",
+"mtga_id": 103496,
+"color": "G",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 96
+},
+{
+"name": "Beorn, Reluctant Host",
+"mtga_id": 103497,
+"color": "G",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 32
+},
+{
+"name": "Beorn the Fierce",
+"mtga_id": 103499,
+"color": "G",
+"rarity": "mythic",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 206
+},
+{
+"name": "Beorn's Hospitality",
+"mtga_id": 103500,
+"color": "G",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 81
+},
+{
+"name": "Boughside Wanderers",
+"mtga_id": 103501,
+"color": "G",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 19
+},
+{
+"name": "Cantankerous Keepers",
+"mtga_id": 103502,
+"color": "G",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 0
+},
+{
+"name": "Dancing from Dark to Dawn",
+"mtga_id": 103503,
+"color": "G",
+"rarity": "mythic",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 203
+},
+{
+"name": "Down in the Valley",
+"mtga_id": 103504,
+"color": "G",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 109
+},
+{
+"name": "Galion, Elvenking's Butler",
+"mtga_id": 103505,
+"color": "G",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 3
+},
+{
+"name": "Gigantic Big Bear",
+"mtga_id": 103506,
+"color": "G",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 25
+},
+{
+"name": "Guardian of the Halls",
+"mtga_id": 103507,
+"color": "G",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 9
+},
+{
+"name": "Little Bear",
+"mtga_id": 103508,
+"color": "G",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 2
+},
+{
+"name": "Mirkwood Pathmaker",
+"mtga_id": 103509,
+"color": "G",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": 0.54060067,
+"game_count": 899
+},
+{
+"name": "Nasty Little Rabbit",
+"mtga_id": 103510,
+"color": "G",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 19
+},
+{
+"name": "The Notary Hobbits",
+"mtga_id": 103511,
+"color": "G",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 11
+},
+{
+"name": "Old Fat Spider",
+"mtga_id": 103512,
+"color": "G",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 28
+},
+{
+"name": "Ordinary Bear",
+"mtga_id": 103513,
+"color": "G",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 22
+},
+{
+"name": "Part in Friendship",
+"mtga_id": 103514,
+"color": "G",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 209
+},
+{
+"name": "Quarrel",
+"mtga_id": 103515,
+"color": "G",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 398
+},
+{
+"name": "Radagast of Rhosgobel",
+"mtga_id": 103516,
+"color": "G",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 11
+},
+{
+"name": "Through the Forest Gate",
+"mtga_id": 103517,
+"color": "G",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 0
+},
+{
+"name": "Troll Negotiations",
+"mtga_id": 103518,
+"color": "G",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 21
+},
+{
+"name": "Warg Tactics",
+"mtga_id": 103519,
+"color": "G",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 73
+},
+{
+"name": "Wargling",
+"mtga_id": 103520,
+"color": "G",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 2
+},
+{
+"name": "Wilderland Scrounger",
+"mtga_id": 103521,
+"color": "G",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 102
+},
+{
+"name": "Wood Elves",
+"mtga_id": 103522,
+"color": "G",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 56
+},
+{
+"name": "Woodland Weavemaster",
+"mtga_id": 103523,
+"color": "G",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 13
+},
+{
+"name": "Bard, King of Dale",
+"mtga_id": 103524,
+"color": "WU",
+"rarity": "mythic",
+"ever_drawn_win_rate": 0.51940492,
+"win_rate": 0.5127749,
+"game_count": 6184
+},
+{
+"name": "Bard the Bowman",
+"mtga_id": 103525,
+"color": "WU",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.59034968,
+"win_rate": 0.56336776,
+"game_count": 69720
+},
+{
+"name": "Bard's Company",
+"mtga_id": 103526,
+"color": "WU",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.65203956,
+"win_rate": 0.59316103,
+"game_count": 25150
+},
+{
+"name": "Bifur, Melodic Rider",
+"mtga_id": 103527,
+"color": "WR",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.53126793,
+"win_rate": 0.52837573,
+"game_count": 3577
+},
+{
+"name": "Bolg of the North",
+"mtga_id": 103528,
+"color": "BR",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 8
+},
+{
+"name": "Bolg's Company",
+"mtga_id": 103529,
+"color": "BR",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 0
+},
+{
+"name": "The Chief Warg",
+"mtga_id": 103530,
+"color": "BG",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 0
+},
+{
+"name": "Chief Warg's Company",
+"mtga_id": 103531,
+"color": "BG",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 69
+},
+{
+"name": "D\u00e1in's Company",
+"mtga_id": 103532,
+"color": "WR",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 149
+},
+{
+"name": "Duskwatch Hunter",
+"mtga_id": 103533,
+"color": "BG",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 29
+},
+{
+"name": "Dwalin, Weaponmaster",
+"mtga_id": 103534,
+"color": "WR",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.57255937,
+"win_rate": 0.56031469,
+"game_count": 2288
+},
+{
+"name": "Eagle's Rescue",
+"mtga_id": 103535,
+"color": "WU",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.58064307,
+"win_rate": 0.55771806,
+"game_count": 30623
+},
+{
+"name": "Fearsome Goblin Pair",
+"mtga_id": 103536,
+"color": "BR",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 0
+},
+{
+"name": "Goblin Plate Mail",
+"mtga_id": 103537,
+"color": "BR",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 83
+},
+{
+"name": "The Great Goblin",
+"mtga_id": 103538,
+"color": "BR",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 0
+},
+{
+"name": "Large Bear",
+"mtga_id": 103539,
+"color": "BG",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 3
+},
+{
+"name": "Mirkwood Nurturer",
+"mtga_id": 103540,
+"color": "UG",
+"rarity": "common",
+"ever_drawn_win_rate": 0.57400858,
+"win_rate": 0.55652973,
+"game_count": 26119
+},
+{
+"name": "Nori, Teller of Tales",
+"mtga_id": 103541,
+"color": "WR",
+"rarity": "common",
+"ever_drawn_win_rate": 0.54846939,
+"win_rate": 0.5380545,
+"game_count": 11339
+},
+{
+"name": "Patient Instructor",
+"mtga_id": 103542,
+"color": "WU",
+"rarity": "common",
+"ever_drawn_win_rate": 0.59695252,
+"win_rate": 0.57090416,
+"game_count": 131304
+},
+{
+"name": "Silvan Reveler",
+"mtga_id": 103543,
+"color": "UG",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.53525323,
+"win_rate": 0.51587302,
+"game_count": 2016
+},
+{
+"name": "Smaug, Wicked Worm",
+"mtga_id": 103544,
+"color": "BR",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 28
+},
+{
+"name": "Thorin Oakenshield",
+"mtga_id": 103545,
+"color": "WR",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 161
+},
+{
+"name": "Thranduil, Sindarin Liege",
+"mtga_id": 103546,
+"color": "UG",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.59737668,
+"win_rate": 0.56350022,
+"game_count": 13622
+},
+{
+"name": "Thranduil, the Elvenking",
+"mtga_id": 103548,
+"color": "UBG",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 3
+},
+{
+"name": "Thranduil's Company",
+"mtga_id": 103549,
+"color": "UG",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.63490305,
+"win_rate": 0.58429496,
+"game_count": 3553
+},
+{
+"name": "Tom, Bert, and William",
+"mtga_id": 103550,
+"color": "BG",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 34
+},
+{
+"name": "The Arkenstone",
+"mtga_id": 103551,
+"color": "",
+"rarity": "mythic",
+"ever_drawn_win_rate": 0.6512,
+"win_rate": 0.59230144,
+"game_count": 3689
+},
+{
+"name": "The Black Arrow",
+"mtga_id": 103553,
+"color": "",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.46967071,
+"win_rate": 0.47120843,
+"game_count": 1233
+},
+{
+"name": "Dwarven Mattock",
+"mtga_id": 103554,
+"color": "",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.53012048,
+"win_rate": 0.52849162,
+"game_count": 1790
+},
+{
+"name": "Giant's Boulder",
+"mtga_id": 103555,
+"color": "",
+"rarity": "common",
+"ever_drawn_win_rate": 0.49669312,
+"win_rate": 0.49901055,
+"game_count": 3032
+},
+{
+"name": "Glamdring, Foe-hammer",
+"mtga_id": 103556,
+"color": "",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 395
+},
+{
+"name": "Key to the Side-Door",
+"mtga_id": 103558,
+"color": "",
+"rarity": "uncommon",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 414
+},
+{
+"name": "My Precious",
+"mtga_id": 103559,
+"color": "",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": 0.4223301,
+"game_count": 618
+},
+{
+"name": "Orcrist, Goblin-cleaver",
+"mtga_id": 103561,
+"color": "",
+"rarity": "mythic",
+"ever_drawn_win_rate": null,
+"win_rate": 0.44711538,
+"game_count": 624
+},
+{
+"name": "Sting, Bilbo's Sword",
+"mtga_id": 103562,
+"color": "",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.49211356,
+"win_rate": 0.47916667,
+"game_count": 1296
+},
+{
+"name": "Thr\u00f3r's Map",
+"mtga_id": 103563,
+"color": "",
+"rarity": "uncommon",
+"ever_drawn_win_rate": 0.56262452,
+"win_rate": 0.54307066,
+"game_count": 14987
+},
+{
+"name": "Well-Worn Spatula",
+"mtga_id": 103564,
+"color": "",
+"rarity": "common",
+"ever_drawn_win_rate": 0.50966744,
+"win_rate": 0.50944767,
+"game_count": 2752
+},
+{
+"name": "Elven Passage",
+"mtga_id": 103565,
+"color": "",
+"rarity": "rare",
+"ever_drawn_win_rate": 0.55421687,
+"win_rate": 0.54727428,
+"game_count": 2348
+},
+{
+"name": "Elvenking's Halls",
+"mtga_id": 103566,
+"color": "",
+"rarity": "common",
+"ever_drawn_win_rate": 0.54992918,
+"win_rate": 0.54699807,
+"game_count": 5713
+},
+{
+"name": "Goblin-town",
+"mtga_id": 103567,
+"color": "",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 61
+},
+{
+"name": "Hobbit Hole",
+"mtga_id": 103568,
+"color": "",
+"rarity": "common",
+"ever_drawn_win_rate": 0.57124731,
+"win_rate": 0.56872618,
+"game_count": 35947
+},
+{
+"name": "Iron Hills",
+"mtga_id": 103569,
+"color": "",
+"rarity": "common",
+"ever_drawn_win_rate": 0.54624665,
+"win_rate": 0.52925878,
+"game_count": 3076
+},
+{
+"name": "Lake-town",
+"mtga_id": 103570,
+"color": "",
+"rarity": "common",
+"ever_drawn_win_rate": 0.56592494,
+"win_rate": 0.55999287,
+"game_count": 78501
+},
+{
+"name": "The Lonely Mountain",
+"mtga_id": 103571,
+"color": "",
+"rarity": "rare",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 209
+},
+{
+"name": "Mirkwood",
+"mtga_id": 103572,
+"color": "",
+"rarity": "common",
+"ever_drawn_win_rate": null,
+"win_rate": null,
+"game_count": 104
+}
+]
+}
