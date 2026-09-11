@@ -1,0 +1,43 @@
+name: E2E
+
+# These drive a real bot draft on draftmancer.com and fetch real 17Lands data,
+# so they deliberately do NOT run on every push. A daily run catches the kind of
+# DOM drift that broke new-draft detection, without turning someone else's site
+# into a build dependency on every commit.
+on:
+  schedule:
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+# A second run starting while one is in flight would double the load on the
+# live site for no benefit.
+concurrency:
+  group: e2e
+  cancel-in-progress: false
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npx playwright install --with-deps chromium
+
+      - run: npm run test:e2e
+
+      - if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14

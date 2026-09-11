@@ -6,9 +6,12 @@
   "license": "MIT",
   "scripts": {
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "playwright test --config playwright.config.mjs",
+    "test:e2e:headed": "playwright test --config playwright.config.mjs --headed"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "vitest": "^5.0.0"
   }
 }
