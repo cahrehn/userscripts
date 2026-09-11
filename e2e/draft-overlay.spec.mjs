@@ -34,44 +34,52 @@ test.describe('GIH WR overlay in a real bot draft', () => {
         await expect(overlays.first()).toHaveText(/(GIH|WR):\s*\d+\.\d%/);
     });
 
-    test('keeps badges on the next pack and toggles off on demand', async ({ page }) => {
+    test('clears every badge when a pick is made', async ({ page }) => {
         await startBotDraft(page);
         await toggleOverlay(page);
-
-        const before = await page.locator(OVERLAY).count();
-        expect(before).toBeGreaterThan(0);
+        expect(await page.locator(OVERLAY).count()).toBeGreaterThan(0);
 
         await makePick(page);
 
-        // The script has an auto-off that triggers when card elements are
-        // *removed* from the DOM. In a bot draft Draftmancer reuses the same
-        // card elements for the next pack rather than removing them, so that
-        // path does not fire and the badges stay up - which is the more useful
-        // behaviour anyway. Asserted so a change in either is noticed.
-        await expect.poll(() => page.locator(OVERLAY).count(), { timeout: 30_000 })
-            .toBeGreaterThan(0);
-
-        // Toggling off must still clear them
-        await toggleOverlay(page);
+        // Picking auto-disables the overlay. Every badge must go: a repaint is
+        // debounced by 200ms, and if it is not cancelled it lands after the
+        // hide and paints badges back onto whichever cards carried over into
+        // the next pack - which is exactly what used to happen.
         await expect.poll(() => page.locator(OVERLAY).count(), { timeout: 30_000 })
             .toBe(0);
+
+        // Still usable afterwards
+        await toggleOverlay(page);
+        await expect.poll(() => page.locator(OVERLAY).count(), { timeout: 30_000 })
+            .toBeGreaterThan(0);
     });
 
-    // This is the test that would have caught the shipped bug. The pick counter
-    // is not a per-pack index: it counts down from a fixed maximum, so the old
-    // `pick === 1` condition could never be true in a real draft.
-    test('counts the pick number down rather than up from one', async ({ page }) => {
+    test('leaves no badge behind across several picks', async ({ page }) => {
+        await startBotDraft(page);
+
+        for (let i = 0; i < 3; i++) {
+            await toggleOverlay(page);
+            expect(await page.locator(OVERLAY).count()).toBeGreaterThan(0);
+            await makePick(page);
+            await expect.poll(() => page.locator(OVERLAY).count(), { timeout: 30_000 })
+                .toBe(0);
+        }
+    });
+
+    // Documents the numbers the reset logic depends on. The pick number is
+    // deliberately not asserted: it is an internal value that climbs by ~95 a
+    // pick, and reading it as a pick index is what broke new-draft detection.
+    test('counts the booster down and holds the pack index', async ({ page }) => {
         await startBotDraft(page);
 
         const first = await readPosition(page);
         expect(first.pack).toBe(1);
-        // Whatever the maximum is, it is emphatically not 1
-        expect(first.pick).toBeGreaterThan(1);
+        expect(first.boosterSize).toBeGreaterThan(1);
 
         await makePick(page);
         const second = await readPosition(page);
 
         expect(second.pack).toBe(1);
-        expect(second.pick).toBeLessThan(first.pick);
+        expect(second.boosterSize).toBe(first.boosterSize - 1);
     });
 });

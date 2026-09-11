@@ -488,8 +488,11 @@
             if (currentSite && currentSite.needsScryfall) {
                 await loadScryfallMapping();
             }
-            showOverlays();
+            // Re-check: the await above yields, and a pick during that gap can
+            // turn the overlay back off.
+            if (overlayEnabled) showOverlays();
         } else {
+            cancelPendingRepaint();
             hideOverlays();
         }
 
@@ -570,6 +573,11 @@
 
     function showOverlays() {
         if (!currentSite) return;
+        // The repaint is debounced, so by the time it runs the overlay may have
+        // been switched off - by a pick, the hotkey, or the button. Painting
+        // badges back on at that point is exactly the bug where a card that
+        // carried over into the next pack kept its win rate.
+        if (!overlayEnabled) return;
 
         const cards = document.querySelectorAll(currentSite.cardSelector);
 
@@ -607,8 +615,17 @@
     }
 
     // Watch for new cards being added to the DOM
+    // Hoisted out of observeCards so turning the overlay off can cancel a
+    // pending repaint. Without that, a showOverlays() scheduled just before a
+    // pick fires ~200ms after hideOverlays() and paints badges back on.
+    let overlayRepaintTimer = null;
+
+    function cancelPendingRepaint() {
+        clearTimeout(overlayRepaintTimer);
+        overlayRepaintTimer = null;
+    }
+
     function observeCards() {
-        let debounceTimer = null;
 
         const observer = new MutationObserver((mutations) => {
             // Runs before the overlay check: the pick counter keeps advancing
@@ -650,8 +667,8 @@
 
             if (hasCardChanges) {
                 // Debounce to avoid rapid updates
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(showOverlays, 200);
+                cancelPendingRepaint();
+                overlayRepaintTimer = setTimeout(showOverlays, 200);
             }
         });
 
@@ -672,20 +689,25 @@
     // A colour filter is only meaningful for the draft it was chosen in, so it
     // has to reset when a new one starts.
     //
-    // Draftmancer renders the drafter's position as "Pack #N, Pick #M" inside
-    // #booster-controls. The number after "Pick #" is NOT a per-pack index: it
-    // counts DOWN as the draft proceeds (173, 170, 168, 165, ... observed live)
-    // and never reaches 1. An earlier version of this looked for pick === 1,
-    // which simply never happened, so the reset never fired.
+    // Draftmancer renders "Your Booster (N)Pack #P, Pick #M" in #booster-controls.
+    // Only two of those three numbers mean what they look like:
     //
-    // What does hold is that the counter only ever decreases within a draft, and
-    // a new draft starts it again from its maximum. So a new draft is an upward
-    // jump in that number. The pack number is a real index and is used to keep
-    // a pack rollover from being mistaken for one.
+    //   Your Booster (N)  counts down 14..1 within a pack, then resets  <- usable
+    //   Pack #P           1, 2, 3 - a real index                        <- usable
+    //   Pick #M           NOT a pick index. Observed live across picks:
+    //                     172, 266, 361, 456, 551, 646 ... it climbs by
+    //                     ~95 each pick and is some internal value.     <- unusable
     //
-    // Other signals were tried and rejected: #booster-controls survives a
-    // stopped draft, and Draftmancer restores the session across a reload, so
-    // neither the element disappearing nor a page load marks a new draft.
+    // The original implementation looked for "Pack #1, Pick #1", which never
+    // occurs, so the reset never fired at all.
+    //
+    // A draft therefore progresses monotonically: the pack index never
+    // decreases, and within a pack the booster only shrinks. A new draft is the
+    // only thing that moves either backwards.
+    //
+    // Signals tried and rejected: #booster-controls survives a stopped draft,
+    // and Draftmancer restores the session across a page reload, so neither the
+    // element disappearing nor a page load marks a new draft.
     //
     // 17Lands has no draft to track - it is a stats site, so the filter simply
     // persists there until changed or cleared.
@@ -697,13 +719,18 @@
         const controlsEl = document.querySelector('#booster-controls');
         if (!controlsEl) return null;
 
-        // "Your Booster (14)Pack #1, Pick #173Pick a card" - the trailing prompt
-        // runs straight into the number, so the digits are bounded explicitly
-        // rather than relying on a word boundary.
-        const match = controlsEl.textContent.match(/Pack\s*#(\d+),\s*Pick\s*#(\d+)/i);
-        if (!match) return null;
+        // "Your Booster (14)Pack #1, Pick #172Pick a card" - the heading and the
+        // trailing prompt run straight into the numbers, so nothing here can
+        // rely on surrounding whitespace.
+        const text = controlsEl.textContent;
+        const pack = text.match(/Pack\s*#(\d+)/i);
+        const booster = text.match(/Your\s+Booster\s*\((\d+)\)/i);
+        if (!pack || !booster) return null;
 
-        return { pack: parseInt(match[1], 10), pick: parseInt(match[2], 10) };
+        return {
+            pack: parseInt(pack[1], 10),
+            boosterSize: parseInt(booster[1], 10)
+        };
     }
 
     function checkForNewDraft() {
@@ -716,14 +743,19 @@
         // Nothing to compare against yet - this is the first position seen.
         if (!previous) return;
 
-        // Within a draft the pick counter only decreases, and a later pack never
-        // raises it. An increase means the counter restarted: a new draft.
-        const restarted = position.pick > previous.pick;
+        // Within a draft the pack index only ever increases.
         const wentBackAPack = position.pack < previous.pack;
 
-        if ((restarted || wentBackAPack) && colorFilter) {
+        // A booster that grows mid-pack means a fresh pack was opened. That is
+        // normal at a pack boundary, where the pack index goes up at the same
+        // time, so only count it when the pack index did NOT advance.
+        const boosterRefilled =
+            position.boosterSize > previous.boosterSize && position.pack === previous.pack;
+
+        if ((wentBackAPack || boosterRefilled) && colorFilter) {
             console.log(
-                `New draft detected (pick counter ${previous.pick} -> ${position.pick}) - clearing colour filter`);
+                `New draft detected (pack ${previous.pack}->${position.pack}, ` +
+                `booster ${previous.boosterSize}->${position.boosterSize}) - clearing colour filter`);
             clearColors();
         }
     }

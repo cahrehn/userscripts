@@ -26,11 +26,12 @@ export function clearDom() {
 }
 
 /**
- * Build the counter text Draftmancer renders for a given position, matching the
- * real format: the booster heading runs into "Pack #N, Pick #M" with no
- * separator. The trailing "Pick a card" prompt only appears on the pick the
- * drafter is currently being asked to make.
+ * Build the counter text Draftmancer renders, matching the real format exactly:
+ * the booster heading and the trailing prompt run into the numbers with no
+ * separators. `pick` is included for realism but carries no usable meaning -
+ * see the note in the userscript.
  */
-export function packPickText(pack, pick, { prompt = false } = {}) {
-    return `Your Booster (14)Pack #${pack}, Pick #${pick}${prompt ? 'Pick a card' : ''}`;
+export function packPickText(pack, boosterSize, { pick = 172, prompt = false } = {}) {
+    return `Your Booster (${boosterSize})Pack #${pack}, Pick #${pick}` +
+        (prompt ? 'Pick a card' : '');
 }

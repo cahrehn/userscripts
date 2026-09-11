@@ -61,18 +61,19 @@ test.describe('colour filter lifecycle', () => {
         await expect.poll(() => readFilter(page), { timeout: 30_000 }).toContain('WU');
 
         const start = await readPosition(page);
+        expect(start.pack).toBe(1);
+
         await makePick(page);
         const afterPick = await readPosition(page);
-        expect(afterPick.pick).toBeLessThan(start.pick);
+        expect(afterPick.boosterSize).toBe(start.boosterSize - 1);
 
-        // Rewrite the counter to its starting value, exactly as Draftmancer does
-        // when a new draft begins, and let the script's observer see it.
-        await page.evaluate((maxPick) => {
+        // Rewrite the heading to a full booster on pack 1, exactly what
+        // Draftmancer shows when a new draft begins, and let the observer see it.
+        await page.evaluate((full) => {
             const el = document.querySelector('#booster-controls');
-            const span = [...el.querySelectorAll('span')]
-                .find(n => /Pack\s*#\d+,\s*Pick\s*#\d+/i.test(n.textContent));
-            (span || el).textContent = `Pack #1, Pick #${maxPick}`;
-        }, start.pick);
+            const heading = el.querySelector('h2') || el;
+            heading.textContent = `Your Booster (${full})`;
+        }, start.boosterSize);
 
         await expect.poll(() => readFilter(page), { timeout: 30_000 })
             .toContain('Any');
